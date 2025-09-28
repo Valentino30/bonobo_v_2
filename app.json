@@ -19,7 +19,8 @@
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
       },
       "edgeToEdgeEnabled": true,
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "package": "com.app.bonobo"
     },
     "web": {
       "output": "static",
@@ -42,11 +43,6 @@
       [
         "expo-share-intent",
         {
-          "iosActivationRules": {
-            "NSExtensionActivationSupportsText": true,
-            "NSExtensionActivationSupportsWebURLWithMaxCount": 1
-          },
-          "iosFileTypes": ["public.plain-text"],
           "androidIntentFilters": ["text/plain"]
         }
       ]
@@ -54,6 +50,12 @@
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "452ee81f-825b-4356-984d-a7b21a21b040"
+      }
     }
   }
 }
