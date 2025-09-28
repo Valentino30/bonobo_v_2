@@ -43,7 +43,12 @@
       [
         "expo-share-intent",
         {
-          "androidIntentFilters": ["text/plain"]
+          "androidIntentFilters": [
+            "text/plain",
+            "application/zip",
+            "application/octet-stream",
+            "application/x-zip-compressed"
+          ]
         }
       ]
     ],
