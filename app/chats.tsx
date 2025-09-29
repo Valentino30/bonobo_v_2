@@ -1,7 +1,8 @@
 import ChatCard from '@/components/ChatCard'
+import { ThemedText } from '@/components/themed-text'
+import { ThemedView } from '@/components/themed-view'
 import { useLocalSearchParams } from 'expo-router'
-import { FlatList, Text, View } from 'react-native'
-import { styles } from './styles'
+import { FlatList } from 'react-native'
 
 const emptyPressHandler = () => {
   console.log('Button pressed, but no action defined yet.')
@@ -32,14 +33,13 @@ export default function ChatsScreen() {
   ]
 
   return (
-    <View style={styles.container}>
+    <ThemedView>
       <FlatList
         data={allChats}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => <ChatCard chat={item} onPress={emptyPressHandler} />}
-        contentContainerStyle={styles.listContent}
-        ListEmptyComponent={<Text style={styles.emptyText}>Share a WhatsApp chat export to get started!</Text>}
+        ListEmptyComponent={<ThemedText>Share a WhatsApp chat export to get started!</ThemedText>}
       />
-    </View>
+    </ThemedView>
   )
 }
