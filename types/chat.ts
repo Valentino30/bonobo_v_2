@@ -6,3 +6,8 @@ export interface IChat {
   isNew: boolean
   uri?: string
 }
+
+export interface ChatData {
+  chatName: string
+  messageCount: string
+}
