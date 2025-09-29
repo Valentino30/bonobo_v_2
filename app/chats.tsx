@@ -4,50 +4,22 @@ import { router, useLocalSearchParams } from 'expo-router'
 import { Button, StyleSheet } from 'react-native'
 
 export default function ChatsScreen() {
-  const {
-    importedChatName,
-    importedMessageCount,
-    fileUri,
-    sender1,
-    sender1Count,
-    sender2,
-    sender2Count,
-    messagesBySender1,
-    messagesBySender2,
-  } = useLocalSearchParams<{
-    importedChatName?: string
-    importedMessageCount?: string
-    fileUri?: string
-    sender1?: string
-    sender1Count?: string
-    sender2?: string
-    sender2Count?: string
-    messagesBySender1?: string
-    messagesBySender2?: string
-  }>()
+  const { chat } = useLocalSearchParams<{ chat?: string }>()
+  const chatData = chat ? JSON.parse(chat) : null
 
   return (
     <ThemedView style={styles.container}>
-      <ThemedText style={styles.title}>Chats</ThemedText>
-      {importedChatName && importedMessageCount ? (
+      <ThemedText style={styles.title}>My Chats</ThemedText>
+      {chatData ? (
         <ThemedView style={styles.chatContainer}>
-          <ThemedText style={styles.chatName}>{importedChatName}</ThemedText>
-          <ThemedText style={styles.messageCount}>Total Messages: {importedMessageCount}</ThemedText>
+          <ThemedText style={styles.chatName}>{chatData.chatName}</ThemedText>
+          <ThemedText style={styles.messageCount}>Total Messages: {chatData.messageCount}</ThemedText>
           <Button
             title="Analyze Chat"
             onPress={() => {
               router.push({
                 pathname: '/chat-analysis',
-                params: {
-                  chatName: importedChatName,
-                  messageCount: importedMessageCount,
-                  sender1,
-                  sender1Count,
-                  sender2,
-                  sender2Count,
-                  messagesBySender1,
-                  messagesBySender2,
-                },
+                params: { chat: JSON.stringify(chatData) },
               })
             }}
           />
@@ -72,7 +44,7 @@ const styles = StyleSheet.create({
   chatContainer: {
     padding: 16,
     borderRadius: 8,
-    backgroundColor: '#f0f0f0',
+    backgroundColor: '#373737',
   },
   chatName: {
     fontSize: 18,

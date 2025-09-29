@@ -1,24 +1,30 @@
 import { ThemedText } from '@/components/themed-text'
 import { ThemedView } from '@/components/themed-view'
+import { ChatAnalysisData } from '@/types/chat'
 import { router, useLocalSearchParams } from 'expo-router'
 import { Button, StyleSheet } from 'react-native'
 
 export default function ChatAnalysisScreen() {
-  const { chatName, messageCount, sender1, sender1Count, sender2, sender2Count, messagesBySender1, messagesBySender2 } =
-    useLocalSearchParams<{
-      chatName: string
-      messageCount: string
-      sender1: string
-      sender1Count: string
-      sender2: string
-      sender2Count: string
-      messagesBySender1: string
-      messagesBySender2: string
-    }>()
+  const { chat } = useLocalSearchParams<{ chat?: string }>()
+
+  const chatData: ChatAnalysisData | null = chat ? JSON.parse(chat) : null
+
+  if (!chatData) {
+    return (
+      <ThemedView style={styles.container}>
+        <ThemedText style={styles.title}>Error</ThemedText>
+        <ThemedText>No chat data provided for analysis.</ThemedText>
+        <Button title="Go Back" onPress={() => router.back()} />
+      </ThemedView>
+    )
+  }
+
+  const { chatName, messageCount, sender1, sender1Count, sender2, sender2Count } = chatData
 
   return (
     <ThemedView style={styles.container}>
       <ThemedText style={styles.title}>Chat Analysis: {chatName}</ThemedText>
+
       <ThemedText style={styles.stat}>Total Messages: {messageCount}</ThemedText>
       <ThemedText style={styles.stat}>
         Messages by {sender1}: {sender1Count}
@@ -26,16 +32,13 @@ export default function ChatAnalysisScreen() {
       <ThemedText style={styles.stat}>
         Messages by {sender2}: {sender2Count}
       </ThemedText>
+
       <Button
-        title="Get AI Relationship Analysis"
+        title="Analyze with AI"
         onPress={() => {
           router.push({
             pathname: '/ai-analysis',
-            params: {
-              chatName,
-              messagesBySender1,
-              messagesBySender2,
-            },
+            params: { chat: JSON.stringify(chatData) },
           })
         }}
       />

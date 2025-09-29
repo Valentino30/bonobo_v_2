@@ -1,32 +1,42 @@
 import { ThemedText } from '@/components/themed-text'
 import { ThemedView } from '@/components/themed-view'
+import { ChatAnalysisData } from '@/types/chat'
 import { useLocalSearchParams } from 'expo-router'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react' // Import useMemo
 import { ScrollView, StyleSheet } from 'react-native'
 import { getAnalysis } from '../utils/getAnalysis'
 
 export default function AIAnalysisScreen() {
-  const { chatName, messagesBySender1, messagesBySender2 } = useLocalSearchParams<{
-    chatName: string
-    messagesBySender1: string
-    messagesBySender2: string
-  }>()
-
+  const { chat } = useLocalSearchParams<{ chat?: string }>()
   const [analysis, setAnalysis] = useState('')
   const [loading, setLoading] = useState(true)
   const providerIndexRef = useRef(0)
+
+  const chatData: ChatAnalysisData | null = useMemo(() => {
+    return chat ? JSON.parse(chat) : null
+  }, [chat])
+
   const MAX_MESSAGES = 100
 
   useEffect(() => {
+    if (!chatData) {
+      setAnalysis('Error: Chat data is missing or invalid.')
+      setLoading(false)
+      return
+    }
+
+    const { chatName, messagesBySender1, messagesBySender2 } = chatData
+
     const fetchAnalysis = async () => {
       try {
         setLoading(true)
+
         const parsedMessages1 = messagesBySender1 ? JSON.parse(messagesBySender1) : []
         const parsedMessages2 = messagesBySender2 ? JSON.parse(messagesBySender2) : []
+
         const limitedMessages1 = parsedMessages1.slice(0, MAX_MESSAGES)
         const limitedMessages2 = parsedMessages2.slice(0, MAX_MESSAGES)
-        console.log('Sender 1 messages:', limitedMessages1.length, 'Sample:', limitedMessages1.slice(0, 2))
-        console.log('Sender 2 messages:', limitedMessages2.length, 'Sample:', limitedMessages2.slice(0, 2))
+
         const result = await getAnalysis(chatName, limitedMessages1, limitedMessages2, providerIndexRef)
         setAnalysis(result)
         providerIndexRef.current = 0
@@ -40,16 +50,17 @@ export default function AIAnalysisScreen() {
     }
 
     fetchAnalysis()
-  }, [chatName, messagesBySender1, messagesBySender2])
+  }, [chatData])
+
+  const titleText = chatData?.chatName ? `AI Analysis for: ${chatData.chatName}` : 'AI Relationship Analysis'
 
   return (
     <ThemedView style={styles.container}>
-      <ThemedText style={styles.title}>AI Relationship Analysis</ThemedText>
+      <ThemedText style={styles.title}>{titleText}</ThemedText>
       {loading ? (
         <ThemedText style={styles.loading}>Loading...</ThemedText>
       ) : (
         <ScrollView style={styles.analysisContainer} contentContainerStyle={styles.contentContainer}>
-          <ThemedText style={styles.analysis}>{analysis}</ThemedText>
           <ThemedText style={styles.analysis}>{analysis}</ThemedText>
         </ScrollView>
       )}

@@ -3,11 +3,15 @@ import { ShareIntent } from 'expo-share-intent'
 import { ChatData } from '../types/chat'
 import { parseChatFile } from './parseChatFile'
 
-export const handleShareIntent = async (
-  hasShareIntent: boolean,
-  shareIntent: ShareIntent | null,
+export const handleShareIntent = async ({
+  hasShareIntent,
+  shareIntent,
+  resetShareIntent,
+}: {
+  hasShareIntent: boolean
+  shareIntent: ShareIntent | null
   resetShareIntent: () => void
-) => {
+}) => {
   if (hasShareIntent && shareIntent) {
     if (shareIntent.files && shareIntent.files.length > 0) {
       const sharedFile = shareIntent.files[0]
@@ -26,19 +30,23 @@ export const handleShareIntent = async (
         // Parse the WhatsApp chat file
         const chatData: ChatData = await parseChatFile(fileUri)
 
-        // Redirect to chat analysis screen with parsed data
+        const chatDetails = {
+          fileUri,
+          chatName: chatData.chatName,
+          messageCount: chatData.messageCount,
+          sender1: chatData.senders[0] || '',
+          sender1Count: chatData.senderCounts[chatData.senders[0]]?.toString() || '0',
+          sender2: chatData.senders[1] || '',
+          sender2Count: chatData.senderCounts[chatData.senders[1]]?.toString() || '0',
+          messagesBySender1: JSON.stringify(chatData.messagesBySender[chatData.senders[0]] || []),
+          messagesBySender2: JSON.stringify(chatData.messagesBySender[chatData.senders[1]] || []),
+        }
+
+        // Redirect to chats screen with chat data
         router.replace({
-          pathname: '/chat-analysis',
+          pathname: '/chats',
           params: {
-            fileUri,
-            chatName: chatData.chatName,
-            messageCount: chatData.messageCount,
-            sender1: chatData.senders[0] || '',
-            sender1Count: chatData.senderCounts[chatData.senders[0]]?.toString() || '0',
-            sender2: chatData.senders[1] || '',
-            sender2Count: chatData.senderCounts[chatData.senders[1]]?.toString() || '0',
-            messagesBySender1: JSON.stringify(chatData.messagesBySender[chatData.senders[0]] || []),
-            messagesBySender2: JSON.stringify(chatData.messagesBySender[chatData.senders[1]] || []),
+            chat: JSON.stringify(chatDetails),
           },
         })
         resetShareIntent()

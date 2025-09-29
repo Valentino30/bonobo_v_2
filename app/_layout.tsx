@@ -1,6 +1,6 @@
 import { useColorScheme } from '@/hooks/use-color-scheme'
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native'
-import { Slot } from 'expo-router'
+import { Stack } from 'expo-router'
 import { useShareIntent } from 'expo-share-intent'
 import { StatusBar } from 'expo-status-bar'
 import { useEffect } from 'react'
@@ -9,15 +9,20 @@ import { handleShareIntent } from '../utils/handleShareIntent'
 
 export default function RootLayout() {
   const colorScheme = useColorScheme()
-  const { hasShareIntent, shareIntent, resetShareIntent } = useShareIntent()
+  const shareIntentData = useShareIntent()
 
   useEffect(() => {
-    handleShareIntent(hasShareIntent, shareIntent, resetShareIntent)
-  }, [hasShareIntent, shareIntent, resetShareIntent])
+    handleShareIntent(shareIntentData)
+  }, [shareIntentData])
 
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Slot />
+      <Stack>
+        <Stack.Screen name="index" options={{ headerShown: false }} />
+        <Stack.Screen name="chats" options={{ headerShown: true, title: 'My Chats' }} />
+        <Stack.Screen name="chat-analysis" options={{ headerShown: true, title: 'Chat Analysis' }} />
+        <Stack.Screen name="ai-analysis" options={{ headerShown: true, title: 'AI Analysis' }} />
+      </Stack>
       <StatusBar style="auto" />
     </ThemeProvider>
   )
