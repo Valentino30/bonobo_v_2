@@ -11,4 +11,5 @@ export interface ChatData {
   messageCount: string
   senders: string[]
   senderCounts: { [key: string]: number }
+  messagesBySender: { [key: string]: string[] }
 }

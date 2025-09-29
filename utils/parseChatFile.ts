@@ -48,20 +48,28 @@ export const parseChatFile = async (uri: string): Promise<ChatData> => {
     let messageCount = 0
     const senders = new Set<string>()
     const senderCounts: { [key: string]: number } = {}
+    const messagesBySender: { [key: string]: string[] } = {}
 
     // Log first 5 lines for debugging
     console.log('First 5 lines of chat for debugging:', lines.slice(0, 5))
 
     // WhatsApp chat format: Flexible regex to match various date/time formats
-    const messageRegex = /^(\d{1,2}\/\d{1,2}\/\d{2,4},\s*\d{1,2}:\d{2}(?:\s*[AP]M)?\s*[-–]\s*)([^:]+):/
+    const messageRegex = /^(\d{1,2}\/\d{1,2}\/\d{2,4},\s*\d{1,2}:\d{2}(?:\s*[AP]M)?\s*[-–]\s*)([^:]+):(.*)/
     for (const line of lines) {
       const senderMatch = line.match(messageRegex)
-      if (senderMatch) {
+      if (senderMatch && senderMatch[2] && senderMatch[3]) {
         const sender = senderMatch[2].trim()
-        senders.add(sender)
-        senderCounts[sender] = (senderCounts[sender] || 0) + 1
-        messageCount++
-        console.log('Found message from:', sender)
+        const message = senderMatch[3].trim()
+        if (message !== '<Media omitted>') {
+          senders.add(sender)
+          senderCounts[sender] = (senderCounts[sender] || 0) + 1
+          if (!messagesBySender[sender]) {
+            messagesBySender[sender] = []
+          }
+          messagesBySender[sender].push(message)
+          messageCount++
+          console.log('Found message from:', sender, 'Message:', message)
+        }
       }
     }
 
@@ -84,6 +92,7 @@ export const parseChatFile = async (uri: string): Promise<ChatData> => {
       messageCount: messageCount.toString(),
       senders: Array.from(senders),
       senderCounts,
+      messagesBySender,
     }
   } catch (error: unknown) {
     const errorMessage = error instanceof Error ? error.message : 'Unknown error'

@@ -4,16 +4,27 @@ import { router, useLocalSearchParams } from 'expo-router'
 import { Button, StyleSheet } from 'react-native'
 
 export default function ChatsScreen() {
-  const { importedChatName, importedMessageCount, fileUri, sender1, sender1Count, sender2, sender2Count } =
-    useLocalSearchParams<{
-      importedChatName?: string
-      importedMessageCount?: string
-      fileUri?: string
-      sender1?: string
-      sender1Count?: string
-      sender2?: string
-      sender2Count?: string
-    }>()
+  const {
+    importedChatName,
+    importedMessageCount,
+    fileUri,
+    sender1,
+    sender1Count,
+    sender2,
+    sender2Count,
+    messagesBySender1,
+    messagesBySender2,
+  } = useLocalSearchParams<{
+    importedChatName?: string
+    importedMessageCount?: string
+    fileUri?: string
+    sender1?: string
+    sender1Count?: string
+    sender2?: string
+    sender2Count?: string
+    messagesBySender1?: string
+    messagesBySender2?: string
+  }>()
 
   return (
     <ThemedView style={styles.container}>
@@ -34,6 +45,8 @@ export default function ChatsScreen() {
                   sender1Count,
                   sender2,
                   sender2Count,
+                  messagesBySender1,
+                  messagesBySender2,
                 },
               })
             }}

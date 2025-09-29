@@ -43,6 +43,8 @@ export default function RootLayout() {
                 sender1Count: chatData.senderCounts[chatData.senders[0]]?.toString() || '0',
                 sender2: chatData.senders[1] || '',
                 sender2Count: chatData.senderCounts[chatData.senders[1]]?.toString() || '0',
+                messagesBySender1: JSON.stringify(chatData.messagesBySender[chatData.senders[0]] || []),
+                messagesBySender2: JSON.stringify(chatData.messagesBySender[chatData.senders[1]] || []),
               },
             })
             resetShareIntent()
@@ -67,6 +69,7 @@ export default function RootLayout() {
         <Stack.Screen name="index" options={{ headerShown: false }} />
         <Stack.Screen name="chats" options={{ headerShown: true, title: 'My Chats' }} />
         <Stack.Screen name="chat-analysis" options={{ headerShown: true, title: 'Chat Analysis' }} />
+        <Stack.Screen name="ai-analysis" options={{ headerShown: true, title: 'AI Analysis' }} />
       </Stack>
       <StatusBar style="auto" />
     </ThemeProvider>
