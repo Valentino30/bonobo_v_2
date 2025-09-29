@@ -1,30 +1,84 @@
 import { useColorScheme } from '@/hooks/use-color-scheme'
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native'
-import { Stack, router } from 'expo-router' // Import router
+import * as FileSystem from 'expo-file-system/legacy' // Use legacy API
+import { Stack, router } from 'expo-router'
 import { useShareIntent } from 'expo-share-intent'
 import { StatusBar } from 'expo-status-bar'
+import JSZip from 'jszip' // Pure JS ZIP library
 import { useEffect } from 'react'
 import 'react-native-reanimated'
 
-// --- SIMULATED PARSING FUNCTION ---
-// In a real app, this would use expo-file-system and a zip library.
+// --- REAL PARSING FUNCTION ---
 const parseChatFile = async (uri: string) => {
-  await new Promise((resolve) => setTimeout(resolve, 2000)) // Simulate 2s delay for unzipping/reading
+  try {
+    // 1. Define paths
+    const zipPath = uri // The shared .zip file URI
 
-  // Return the mock parsed data (this is what you wanted to see on the card)
-  return {
-    chatName: 'John Smith and Jane Doe',
-    messageCount: '524',
+    // 2. Read the .zip file as Base64
+    console.log('Attempting to load ZIP:', zipPath)
+    const zipContent = await FileSystem.readAsStringAsync(zipPath, {
+      encoding: FileSystem.EncodingType.Base64,
+    })
+
+    // 3. Load and unzip using JSZip
+    const zip = await JSZip.loadAsync(zipContent, { base64: true })
+    console.log('ZIP loaded successfully')
+
+    // 4. Log all files in the ZIP for debugging
+    const zipFiles = Object.keys(zip.files)
+    console.log('Files in ZIP:', zipFiles)
+
+    // 5. Find the chat file (_chat.txt or any .txt file)
+    let chatFileEntry = zip.file('_chat.txt')
+    if (!chatFileEntry) {
+      // Try finding any .txt file
+      const txtFile = zipFiles.find((file) => file.toLowerCase().endsWith('.txt'))
+      if (!txtFile) {
+        throw new Error('No .txt file found in the zip. Available files: ' + zipFiles.join(', '))
+      }
+      chatFileEntry = zip.file(txtFile)
+      if (!chatFileEntry) {
+        throw new Error(`Failed to access .txt file: ${txtFile}`)
+      }
+      console.log('Using alternative text file:', txtFile)
+    } else {
+      console.log('Found _chat.txt')
+    }
+
+    // 6. Read the chat file content directly
+    const chatContent = await chatFileEntry.async('string')
+
+    // 7. Parse the chat content
+    const lines = chatContent.split('\n').filter((line) => line.trim())
+    let chatName = 'Unknown Chat'
+    let messageCount = 0
+
+    // WhatsApp chat format: [date, time] Sender: Message
+    if (lines.length > 0) {
+      const firstLine = lines[0]
+      const senderMatch = firstLine.match(/\[.*?\]\s*([^:]+):/)
+      chatName = senderMatch ? senderMatch[1].trim() : 'WhatsApp Chat'
+      messageCount = lines.length // Count non-empty lines as messages
+    }
+
+    console.log('Parsed chat:', { chatName, messageCount })
+
+    return {
+      chatName,
+      messageCount: messageCount.toString(),
+    }
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error'
+    console.error('Error parsing chat file:', errorMessage)
+    throw new Error(`Failed to parse WhatsApp chat file: ${errorMessage}`)
   }
 }
-// ----------------------------------
 
 export default function RootLayout() {
   const colorScheme = useColorScheme()
   const { hasShareIntent, shareIntent, resetShareIntent } = useShareIntent()
 
   useEffect(() => {
-    // Define an async function to handle the file processing logic
     const handleShareIntent = async () => {
       if (hasShareIntent && shareIntent) {
         if (shareIntent.files && shareIntent.files.length > 0) {
@@ -32,23 +86,33 @@ export default function RootLayout() {
           const fileUri = sharedFile.path
           const mimeType = sharedFile.mimeType
 
+          // Validate file type
+          if (!mimeType.includes('zip')) {
+            console.log('Invalid file type, expected a .zip file')
+            resetShareIntent()
+            return
+          }
+
           console.log('--- STARTING IN-LAYOUT FILE PROCESSING ---')
+          try {
+            // 1. Parse the WhatsApp chat file
+            const { chatName, messageCount } = await parseChatFile(fileUri)
 
-          // 1. AWAIT PARSING: Perform the file reading/unzipping here
-          const { chatName, messageCount } = await parseChatFile(fileUri)
-
-          // 2. REDIRECT with PARSED DATA
-          router.replace({
-            pathname: '/chats',
-            params: {
-              fileUri: fileUri,
-              // Pass the actual parsed data
-              importedChatName: chatName,
-              importedMessageCount: messageCount,
-            },
-          })
-
-          resetShareIntent()
+            // 2. Redirect with parsed data
+            router.replace({
+              pathname: '/chats',
+              params: {
+                fileUri,
+                importedChatName: chatName,
+                importedMessageCount: messageCount,
+              },
+            })
+            resetShareIntent()
+          } catch (error: unknown) {
+            const errorMessage = error instanceof Error ? error.message : 'Unknown error'
+            console.error('Error handling shared file:', errorMessage)
+            resetShareIntent()
+          }
         } else if (shareIntent.webUrl) {
           console.log('Shared URL (Plain):', shareIntent.webUrl)
           resetShareIntent()
