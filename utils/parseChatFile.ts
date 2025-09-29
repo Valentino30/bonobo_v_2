@@ -7,7 +7,7 @@ export const parseChatFile = async (uri: string): Promise<ChatData> => {
     // 1. Define paths and extract file name for fallback
     const zipPath = uri
     const fileName = zipPath.split('/').pop()?.replace('.zip', '') || 'WhatsApp Chat'
-    const formattedChatName = fileName.replace('WhatsApp Chat with ', '').replace(/ & /g, ':') // Convert to Name_1:Name_2 format
+    const formattedChatName = fileName.replace('WhatsApp Chat with ', '').replace(/ & /g, ':')
     console.log('Attempting to load ZIP:', zipPath)
 
     // 2. Read the .zip file as Base64
@@ -28,7 +28,7 @@ export const parseChatFile = async (uri: string): Promise<ChatData> => {
     if (!chatFileEntry) {
       const txtFile = zipFiles.find((file) => file.toLowerCase().endsWith('.txt'))
       if (!txtFile) {
-        throw new Error('No .txt file found in the zip. Available files: ' + zipFiles.join(', '))
+        throw new Error(`No .txt file found in the zip. Available files: ${zipFiles.join(', ')}`)
       }
       chatFileEntry = zip.file(txtFile)
       if (!chatFileEntry) {
@@ -47,6 +47,7 @@ export const parseChatFile = async (uri: string): Promise<ChatData> => {
     let chatName = formattedChatName
     let messageCount = 0
     const senders = new Set<string>()
+    const senderCounts: { [key: string]: number } = {}
 
     // Log first 5 lines for debugging
     console.log('First 5 lines of chat for debugging:', lines.slice(0, 5))
@@ -58,6 +59,7 @@ export const parseChatFile = async (uri: string): Promise<ChatData> => {
       if (senderMatch) {
         const sender = senderMatch[2].trim()
         senders.add(sender)
+        senderCounts[sender] = (senderCounts[sender] || 0) + 1
         messageCount++
         console.log('Found message from:', sender)
       }
@@ -75,11 +77,13 @@ export const parseChatFile = async (uri: string): Promise<ChatData> => {
 
     // Log parsing results
     console.log('First line of chat for parsing:', lines[0])
-    console.log('Parsed chat:', { chatName, messageCount })
+    console.log('Parsed chat:', { chatName, messageCount, senders: Array.from(senders), senderCounts })
 
     return {
       chatName,
       messageCount: messageCount.toString(),
+      senders: Array.from(senders),
+      senderCounts,
     }
   } catch (error: unknown) {
     const errorMessage = error instanceof Error ? error.message : 'Unknown error'

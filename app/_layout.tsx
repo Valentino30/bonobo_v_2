@@ -30,15 +30,19 @@ export default function RootLayout() {
           console.log('--- STARTING IN-LAYOUT FILE PROCESSING ---')
           try {
             // 1. Parse the WhatsApp chat file
-            const { chatName, messageCount }: ChatData = await parseChatFile(fileUri)
+            const chatData: ChatData = await parseChatFile(fileUri)
 
-            // 2. Redirect with parsed data
+            // 2. Redirect to chat analysis screen with parsed data
             router.replace({
-              pathname: '/chats',
+              pathname: '/chat-analysis',
               params: {
                 fileUri,
-                importedChatName: chatName,
-                importedMessageCount: messageCount,
+                chatName: chatData.chatName,
+                messageCount: chatData.messageCount,
+                sender1: chatData.senders[0] || '',
+                sender1Count: chatData.senderCounts[chatData.senders[0]]?.toString() || '0',
+                sender2: chatData.senders[1] || '',
+                sender2Count: chatData.senderCounts[chatData.senders[1]]?.toString() || '0',
               },
             })
             resetShareIntent()
@@ -62,6 +66,7 @@ export default function RootLayout() {
       <Stack>
         <Stack.Screen name="index" options={{ headerShown: false }} />
         <Stack.Screen name="chats" options={{ headerShown: true, title: 'My Chats' }} />
+        <Stack.Screen name="chat-analysis" options={{ headerShown: true, title: 'Chat Analysis' }} />
       </Stack>
       <StatusBar style="auto" />
     </ThemeProvider>
