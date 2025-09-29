@@ -1,4 +1,5 @@
 import { providers } from '@/constants/providers'
+import axios from 'axios'
 
 export const getAnalysis = async (
   chatName: string,
@@ -20,34 +21,28 @@ export const getAnalysis = async (
         '\n'
       )}. Provide a brief analysis of relationship dynamics, communication style, and compatibility.`
       console.log(`Trying ${provider.name} API... Prompt length: ${prompt.length}`)
-      const response = await fetch(provider.url, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${provider.key}`,
-        },
-        body: JSON.stringify({
+      const response = await axios.post(
+        provider.url,
+        {
           model: provider.model,
           messages: [{ role: 'user', content: prompt }],
           max_tokens: 300,
-        }),
-      })
+        },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${provider.key}`,
+          },
+        }
+      )
 
-      if (!response.ok) {
-        const errorText = await response.text()
-        console.log(`${provider.name} failed: ${response.status} - ${errorText}`)
+      if (!response.data.choices?.[0]?.message?.content) {
+        console.log(`${provider.name} invalid response:`, response.data)
         providerIndexRef.current += 1
         continue
       }
 
-      const data = await response.json()
-      if (!data.choices?.[0]?.message?.content) {
-        console.log(`${provider.name} invalid response:`, data)
-        providerIndexRef.current += 1
-        continue
-      }
-
-      return data.choices[0].message.content
+      return response.data.choices[0].message.content
     } catch (error: unknown) {
       const errorMessage = error instanceof Error ? error.message : 'Unknown error'
       console.error(`${provider.name} error: ${errorMessage}`, error)
