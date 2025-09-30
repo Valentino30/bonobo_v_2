@@ -22,6 +22,8 @@ export default function RootLayout() {
         <Stack.Screen name="chats" options={{ headerShown: true, title: 'My Chats' }} />
         <Stack.Screen name="chat-analysis" options={{ headerShown: true, title: 'Chat Analysis' }} />
         <Stack.Screen name="ai-analysis" options={{ headerShown: true, title: 'AI Analysis' }} />
+        <Stack.Screen name="select-device" options={{ headerShown: true, title: 'Select Device' }} />
+        <Stack.Screen name="import-chat" options={{ headerShown: true, title: 'Import Chat' }} />
       </Stack>
       <StatusBar style="auto" />
     </ThemeProvider>
