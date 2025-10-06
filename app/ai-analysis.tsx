@@ -1,5 +1,6 @@
-import { ThemedText } from '@/components/themed-text'
-import { ThemedView } from '@/components/themed-view'
+import { ThemedText } from '@/components/ThemedText'
+
+import { ThemedView } from '@/components/ThemedView'
 import { ChatAnalysisData } from '@/types/chat'
 import { useLocalSearchParams } from 'expo-router'
 import { useEffect, useMemo, useRef, useState } from 'react' // Import useMemo

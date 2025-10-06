@@ -1,5 +1,5 @@
-import { ThemedText } from '@/components/themed-text'
-import { ThemedView } from '@/components/themed-view'
+import { ThemedText } from '@/components/ThemedText'
+import { ThemedView } from '@/components/ThemedView'
 import { WHATSAPP_EXPORT_STEPS_ANDROID, WHATSAPP_EXPORT_STEPS_IOS } from '@/constants/import'
 import { useLocalSearchParams } from 'expo-router'
 import { FlatList, StyleSheet, View } from 'react-native'
