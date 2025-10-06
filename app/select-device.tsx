@@ -1,7 +1,6 @@
-import { ThemedText } from '@/components/ThemedText'
-import { ThemedView } from '@/components/ThemedView'
+import { ThemedButton, ThemedText, ThemedView } from '@/components'
 import { router } from 'expo-router'
-import { Button, StyleSheet, View } from 'react-native'
+import { StyleSheet, View } from 'react-native'
 
 export default function SelectDeviceScreen() {
   const navigateToImport = (platform: 'ios' | 'android') => {
@@ -13,13 +12,11 @@ export default function SelectDeviceScreen() {
 
   return (
     <ThemedView style={styles.container}>
-      <ThemedText style={styles.title}>Select Your Device</ThemedText>
       <ThemedText style={styles.subtitle}>Which type of phone are you exporting your chat from?</ThemedText>
-
       <View style={styles.buttonContainer}>
-        <Button title="iPhone" onPress={() => navigateToImport('ios')} />
+        <ThemedButton title="iPhone" onPress={() => navigateToImport('ios')} />
         <View style={styles.spacer} />
-        <Button title="Android" onPress={() => navigateToImport('android')} />
+        <ThemedButton title="Android" onPress={() => navigateToImport('android')} />
       </View>
     </ThemedView>
   )
@@ -31,12 +28,6 @@ const styles = StyleSheet.create({
     padding: 24,
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    marginBottom: 10,
-    textAlign: 'center',
   },
   subtitle: {
     fontSize: 18,

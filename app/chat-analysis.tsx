@@ -1,8 +1,7 @@
-import { ThemedText } from '@/components/ThemedText'
-import { ThemedView } from '@/components/ThemedView'
+import { ThemedButton, ThemedText, ThemedView } from '@/components'
 import { ChatAnalysisData } from '@/types/chat'
 import { router, useLocalSearchParams } from 'expo-router'
-import { Button, StyleSheet } from 'react-native'
+import { StyleSheet } from 'react-native'
 
 export default function ChatAnalysisScreen() {
   const { chat } = useLocalSearchParams<{ chat?: string }>()
@@ -14,17 +13,15 @@ export default function ChatAnalysisScreen() {
       <ThemedView style={styles.container}>
         <ThemedText style={styles.title}>Error</ThemedText>
         <ThemedText>No chat data provided for analysis.</ThemedText>
-        <Button title="Go Back" onPress={() => router.back()} />
+        <ThemedButton title="Go Back" onPress={() => router.back()} />
       </ThemedView>
     )
   }
 
-  const { chatName, messageCount, sender1, sender1Count, sender2, sender2Count } = chatData
+  const { messageCount, sender1, sender1Count, sender2, sender2Count } = chatData
 
   return (
     <ThemedView style={styles.container}>
-      <ThemedText style={styles.title}>Chat Analysis: {chatName}</ThemedText>
-
       <ThemedText style={styles.stat}>Total Messages: {messageCount}</ThemedText>
       <ThemedText style={styles.stat}>
         Messages by {sender1}: {sender1Count}
@@ -33,7 +30,7 @@ export default function ChatAnalysisScreen() {
         Messages by {sender2}: {sender2Count}
       </ThemedText>
 
-      <Button
+      <ThemedButton
         title="Analyze with AI"
         onPress={() => {
           router.push({

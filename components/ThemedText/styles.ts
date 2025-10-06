@@ -1,27 +1,26 @@
+import type { Theme } from '@/context/ThemeProvider'
 import { StyleSheet } from 'react-native'
 
-export const styles = StyleSheet.create({
-  default: {
-    fontSize: 16,
-    lineHeight: 24,
-  },
-  defaultSemiBold: {
-    fontSize: 16,
-    lineHeight: 24,
-    fontWeight: '600',
-  },
-  title: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    lineHeight: 32,
-  },
-  subtitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
-  link: {
-    lineHeight: 30,
-    fontSize: 16,
-    color: '#0a7ea4',
-  },
-})
+export const getStyles = (theme: Theme) =>
+  StyleSheet.create({
+    default: {
+      fontSize: 16,
+      lineHeight: 24,
+    },
+    title: {
+      fontSize: 32,
+      lineHeight: 32,
+    },
+    subtitle: {
+      fontSize: 20,
+    },
+    button: {
+      fontSize: 18,
+      color: theme.buttonText,
+      fontFamily: 'Nunito_700Bold',
+    },
+    link: {
+      lineHeight: 30,
+      fontSize: 16,
+    },
+  })

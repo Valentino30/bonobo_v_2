@@ -1,7 +1,7 @@
-import { ThemedText } from '@/components/ThemedText'
-import { ThemedView } from '@/components/ThemedView'
+import { ThemedButton, ThemedText, ThemedView } from '@/components'
+import { ChatCard } from '@/components/ChatCard'
 import { router, useLocalSearchParams } from 'expo-router'
-import { Button, StyleSheet, View } from 'react-native'
+import { StyleSheet, View } from 'react-native'
 
 export default function ChatsScreen() {
   const { chat } = useLocalSearchParams<{ chat?: string }>()
@@ -14,28 +14,29 @@ export default function ChatsScreen() {
   return (
     <ThemedView style={styles.container}>
       <View style={styles.contentContainer}>
-        <ThemedText style={styles.title}>My Chats</ThemedText>
         {chatData ? (
-          <ThemedView style={styles.chatContainer}>
-            <ThemedText style={styles.chatName}>{chatData.chatName}</ThemedText>
-            <ThemedText style={styles.messageCount}>Total Messages: {chatData.messageCount}</ThemedText>
-            <Button
-              title="Analyze Chat"
-              onPress={() => {
-                router.push({
-                  pathname: '/chat-analysis',
-                  params: { chat: JSON.stringify(chatData) },
-                })
-              }}
-            />
-          </ThemedView>
+          <ChatCard
+            chat={{
+              id: chatData.id || 'imported',
+              name: chatData.chatName,
+              status: `Total Messages: ${chatData.messageCount}`,
+              isNew: true,
+              lastImport: chatData.lastImport || '',
+            }}
+            onPress={() => {
+              router.push({
+                pathname: '/chat-analysis',
+                params: { chat: JSON.stringify(chatData) },
+              })
+            }}
+          />
         ) : (
           <ThemedText>No chats imported yet.</ThemedText>
         )}
       </View>
 
       <View style={styles.importButtonContainer}>
-        <Button title="Import WhatsApp chat" onPress={handleImportChat} />
+        <ThemedButton title="Import WhatsApp chat" onPress={handleImportChat} />
       </View>
     </ThemedView>
   )
@@ -50,16 +51,9 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 0,
   },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 16,
-    paddingHorizontal: 0,
-  },
   chatContainer: {
     padding: 16,
     borderRadius: 8,
-    backgroundColor: '#373737',
     marginBottom: 16,
   },
   chatName: {

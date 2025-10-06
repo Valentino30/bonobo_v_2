@@ -3,29 +3,50 @@
  * There are many other ways to style your app. For example, [Nativewind](https://www.nativewind.dev/), [Tamagui](https://tamagui.dev/), [unistyles](https://reactnativeunistyles.vercel.app), etc.
  */
 
-import { Platform } from 'react-native';
+import { Platform } from 'react-native'
 
-const tintColorLight = '#0a7ea4';
-const tintColorDark = '#fff';
+const matchaGreenLight = '#98C96A' // medium matcha
+const matchaGreenDark = '#4B6C4B' // deep matcha
+const matchaCream = '#F6F5EC' // matcha foam/cream
+const matchaBrown = '#B7A16A' // subtle brown accent
+const matchaShadow = 'rgba(168, 198, 134, 0.15)' // soft green shadow
+const matchaBorder = '#D6E3C3' // border for light
+const matchaBorderDark = '#5A7D5A' // border for dark
 
-export const Colors = {
+export const theme = {
   light: {
-    text: '#11181C',
-    background: '#fff',
-    tint: tintColorLight,
-    icon: '#687076',
-    tabIconDefault: '#687076',
-    tabIconSelected: tintColorLight,
+    primary: matchaGreenLight,
+    background: matchaCream,
+    card: '#E6F0D5',
+    text: '#2C3A2C',
+    buttonText: '#fff', // light for contrast on matcha green
+    muted: '#7D927D',
+    border: matchaBorder,
+    shadow: matchaShadow,
+    surface: '#fff',
+    icon: matchaGreenLight,
+    accent: matchaBrown,
+    tint: matchaGreenLight,
+    tabIconDefault: matchaGreenLight,
+    tabIconSelected: matchaGreenLight,
   },
   dark: {
-    text: '#ECEDEE',
-    background: '#151718',
-    tint: tintColorDark,
-    icon: '#9BA1A6',
-    tabIconDefault: '#9BA1A6',
-    tabIconSelected: tintColorDark,
+    primary: matchaGreenDark,
+    background: '#232B23',
+    card: '#324C32',
+    text: '#F6F5EC',
+    buttonText: '#F6F5EC', // light for contrast on dark matcha
+    muted: '#A8C686',
+    border: matchaBorderDark,
+    shadow: 'rgba(75, 108, 75, 0.25)',
+    surface: '#2C3A2C',
+    icon: matchaGreenDark,
+    accent: matchaBrown,
+    tint: matchaGreenDark,
+    tabIconDefault: matchaGreenDark,
+    tabIconSelected: matchaGreenDark,
   },
-};
+}
 
 export const Fonts = Platform.select({
   ios: {
@@ -50,4 +71,4 @@ export const Fonts = Platform.select({
     rounded: "'SF Pro Rounded', 'Hiragino Maru Gothic ProN', Meiryo, 'MS PGothic', sans-serif",
     mono: "SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace",
   },
-});
+})

@@ -1,5 +1,4 @@
-import { ThemedText } from '@/components/ThemedText'
-import { ThemedView } from '@/components/ThemedView'
+import { ThemedText, ThemedView } from '@/components'
 import { WHATSAPP_EXPORT_STEPS_ANDROID, WHATSAPP_EXPORT_STEPS_IOS } from '@/constants/import'
 import { useLocalSearchParams } from 'expo-router'
 import { FlatList, StyleSheet, View } from 'react-native'
@@ -22,7 +21,7 @@ export default function ImportChatScreen() {
   return (
     <ThemedView style={styles.container}>
       <View style={styles.scrollContent}>
-        <ThemedText style={styles.title}>{titleText}</ThemedText>
+        {/* Removed title */}
 
         <FlatList
           data={instructions}
@@ -43,13 +42,6 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     flex: 1,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    marginBottom: 20,
-    paddingHorizontal: 16,
   },
   openWhatsAppButtonContainer: {
     paddingHorizontal: 16,

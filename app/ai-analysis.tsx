@@ -1,6 +1,4 @@
-import { ThemedText } from '@/components/ThemedText'
-
-import { ThemedView } from '@/components/ThemedView'
+import { ThemedText, ThemedView } from '@/components'
 import { ChatAnalysisData } from '@/types/chat'
 import { useLocalSearchParams } from 'expo-router'
 import { useEffect, useMemo, useRef, useState } from 'react' // Import useMemo
@@ -53,11 +51,8 @@ export default function AIAnalysisScreen() {
     fetchAnalysis()
   }, [chatData])
 
-  const titleText = chatData?.chatName ? `AI Analysis for: ${chatData.chatName}` : 'AI Relationship Analysis'
-
   return (
     <ThemedView style={styles.container}>
-      <ThemedText style={styles.title}>{titleText}</ThemedText>
       {loading ? (
         <ThemedText style={styles.loading}>Loading...</ThemedText>
       ) : (
@@ -72,11 +67,6 @@ export default function AIAnalysisScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    padding: 16,
   },
   loading: {
     fontSize: 16,
