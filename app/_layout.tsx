@@ -1,14 +1,10 @@
-// app/_layout.tsx
-
 import { useColorScheme } from '@/hooks/use-color-scheme'
-import { DatabaseProvider } from '@nozbe/watermelondb/DatabaseProvider'
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native'
 import { Stack } from 'expo-router'
 import { useShareIntent } from 'expo-share-intent'
 import { StatusBar } from 'expo-status-bar'
 import { useEffect } from 'react'
 import 'react-native-reanimated'
-import { database } from '../database'
 import { handleShareIntent } from '../utils/handleShareIntent'
 
 export default function RootLayout() {
@@ -20,18 +16,16 @@ export default function RootLayout() {
   }, [shareIntentData])
 
   return (
-    <DatabaseProvider database={database}>
-      <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-        <Stack>
-          <Stack.Screen name="index" options={{ headerShown: false }} />
-          <Stack.Screen name="chats" options={{ headerShown: true, title: 'My Chats' }} />
-          <Stack.Screen name="chat-analysis" options={{ headerShown: true, title: 'Chat Analysis' }} />
-          <Stack.Screen name="ai-analysis" options={{ headerShown: true, title: 'AI Analysis' }} />
-          <Stack.Screen name="select-device" options={{ headerShown: true, title: 'Select Device' }} />
-          <Stack.Screen name="import-chat" options={{ headerShown: true, title: 'Import Chat' }} />
-        </Stack>
-        <StatusBar style="auto" />
-      </ThemeProvider>
-    </DatabaseProvider>
+    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+      <Stack>
+        <Stack.Screen name="index" options={{ headerShown: false }} />
+        <Stack.Screen name="chats" options={{ headerShown: true, title: 'My Chats' }} />
+        <Stack.Screen name="chat-analysis" options={{ headerShown: true, title: 'Chat Analysis' }} />
+        <Stack.Screen name="ai-analysis" options={{ headerShown: true, title: 'AI Analysis' }} />
+        <Stack.Screen name="select-device" options={{ headerShown: true, title: 'Select Device' }} />
+        <Stack.Screen name="import-chat" options={{ headerShown: true, title: 'Import Chat' }} />
+      </Stack>
+      <StatusBar style="auto" />
+    </ThemeProvider>
   )
 }
