@@ -1,10 +1,8 @@
 import { ThemedText } from '@/components/themed-text'
 import { ThemedView } from '@/components/themed-view'
 import { WHATSAPP_EXPORT_STEPS_ANDROID, WHATSAPP_EXPORT_STEPS_IOS } from '@/constants/import'
-import { handleOpenWhatsApp } from '@/utils/handleOpenWhats'
-
 import { useLocalSearchParams } from 'expo-router'
-import { Button, FlatList, StyleSheet, View } from 'react-native'
+import { FlatList, StyleSheet, View } from 'react-native'
 
 type Step = (typeof WHATSAPP_EXPORT_STEPS_IOS)[0]
 
@@ -33,10 +31,6 @@ export default function ImportChatScreen() {
           showsVerticalScrollIndicator={true}
           contentContainerStyle={styles.listContent}
         />
-      </View>
-
-      <View style={styles.openWhatsAppButtonContainer}>
-        <Button title="Open WhatsApp" onPress={handleOpenWhatsApp} />
       </View>
     </ThemedView>
   )
