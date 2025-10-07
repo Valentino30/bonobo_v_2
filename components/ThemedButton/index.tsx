@@ -1,6 +1,6 @@
 import { useTheme } from '@/hooks/useTheme'
 import { StyleProp, TextStyle, TouchableOpacity, TouchableOpacityProps, ViewStyle } from 'react-native'
-import { ThemedText } from '../ThemedText'
+import ThemedText from '../ThemedText'
 import { getStyles } from './styles'
 
 export type ThemedButtonProps = TouchableOpacityProps & {
@@ -9,7 +9,7 @@ export type ThemedButtonProps = TouchableOpacityProps & {
   textStyle?: StyleProp<TextStyle>
 }
 
-export function ThemedButton({ title, style, textStyle, ...rest }: ThemedButtonProps) {
+export default function ThemedButton({ title, style, textStyle, ...rest }: ThemedButtonProps) {
   const { theme } = useTheme()
   const styles = getStyles(theme)
 

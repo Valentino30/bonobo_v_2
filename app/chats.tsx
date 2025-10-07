@@ -1,5 +1,4 @@
-import { ThemedButton, ThemedText, ThemedView } from '@/components'
-import { ChatCard } from '@/components/ChatCard'
+import { ChatCard, ThemedButton, ThemedText, ThemedView } from '@/components'
 import { router, useLocalSearchParams } from 'expo-router'
 import { StyleSheet, View } from 'react-native'
 

@@ -8,7 +8,7 @@ interface ChatCardProps {
   onPress: () => void
 }
 
-export function ChatCard({ chat, onPress }: ChatCardProps) {
+export default function ChatCard({ chat, onPress }: ChatCardProps) {
   const { theme } = useTheme()
   const styles = getStyles(theme)
   return (

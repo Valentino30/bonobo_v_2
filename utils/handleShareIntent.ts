@@ -25,7 +25,6 @@ export const handleShareIntent = async ({
         return
       }
 
-      console.log('--- STARTING IN-LAYOUT FILE PROCESSING ---')
       try {
         // Parse the WhatsApp chat file
         const chatData: ChatData = await parseChatFile(fileUri)

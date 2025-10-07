@@ -8,7 +8,7 @@ export type ThemedTextProps = TextProps & {
   type?: 'default' | 'title' | 'subtitle' | 'button' | 'link'
 }
 
-export function ThemedText({ style, lightColor, darkColor, type = 'default', ...rest }: ThemedTextProps) {
+export default function ThemedText({ style, lightColor, darkColor, type = 'default', ...rest }: ThemedTextProps) {
   const { theme, colorScheme } = useTheme()
   const styles = getStyles(theme)
   let fontFamily = 'Nunito_400Regular'
